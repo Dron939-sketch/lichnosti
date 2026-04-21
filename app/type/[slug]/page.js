@@ -38,7 +38,7 @@ export async function generateMetadata({ params }) {
   return {
     title: cat.seo_title || `${cat.name} — биографии`,
     description: cat.seo_desc || `Биографии: ${cat.name}. Подборка на ${SITE_NAME}.`,
-    alternates: { canonical: `${SITE_URL}/category/${cat.slug}` }
+    alternates: { canonical: `${SITE_URL}/type/${cat.slug}` }
   };
 }
 
@@ -47,12 +47,12 @@ export default async function CategoryPage({ params }) {
   if (!cat) notFound();
 
   const breadcrumb = buildBreadcrumbSchema([
-    { name: 'Главная', url: SITE_URL },
-    { name: cat.name, url: `${SITE_URL}/category/${cat.slug}` }
+    { name: 'Главная страница', url: SITE_URL },
+    { name: cat.name, url: `${SITE_URL}/type/${cat.slug}` }
   ]);
 
   return (
-    <section className="container">
+    <section className="container" style={{ padding: '24px 20px 40px' }}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
@@ -64,19 +64,12 @@ export default async function CategoryPage({ params }) {
         <span>{cat.name}</span>
       </nav>
 
-      <h1 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: 36, margin: '12px 0 6px' }}>
-        {cat.name}
-      </h1>
-      {cat.description && <p style={{ color: '#5b5b5b', maxWidth: 700 }}>{cat.description}</p>}
+      <h1 className="author_title" style={{ marginBottom: 6 }}>{cat.name}</h1>
+      {cat.description && <p className="was">{cat.description}</p>}
 
-      <div className="grid">
+      <div className="grid" style={{ marginTop: 20 }}>
         {cat.persons.map(({ person: p }) => (
-          <Link
-            key={p.slug}
-            href={`/bio/${p.slug}`}
-            className="card"
-            style={{ textDecoration: 'none', color: 'inherit' }}
-          >
+          <Link key={p.slug} href={`/bio/${p.slug}`} className="card">
             <div
               className="card-photo"
               style={p.photo_url ? { backgroundImage: `url(${p.photo_url})` } : undefined}

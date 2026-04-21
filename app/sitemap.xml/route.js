@@ -30,7 +30,7 @@ export async function GET() {
     urlEntry({ loc: `${SITE_URL}/`, changefreq: 'daily', priority: 1.0 }),
     ...categories.map((c) =>
       urlEntry({
-        loc: `${SITE_URL}/category/${c.slug}`,
+        loc: `${SITE_URL}/type/${c.slug}`,
         lastmod: c.updated_at,
         changefreq: 'daily',
         priority: 0.8

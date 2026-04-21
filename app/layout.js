@@ -1,5 +1,7 @@
 import './globals.css';
 import Link from 'next/link';
+import HeaderNav from '@/components/HeaderNav';
+import Analytics from '@/components/Analytics';
 import { SITE_NAME, SITE_URL, SITE_DESCRIPTION } from '@/lib/utils/constants';
 import { buildWebsiteSchema } from '@/lib/seo/schema-builder';
 
@@ -29,40 +31,50 @@ export const metadata = {
     index: true,
     follow: true,
     googleBot: { index: true, follow: true, 'max-snippet': -1, 'max-image-preview': 'large' }
+  },
+  verification: {
+    yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
+    google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION
   }
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="ru">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,400&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(buildWebsiteSchema()) }}
         />
-        <header className="site-header">
-          <div className="container inner">
-            <Link href="/" className="site-logo">{SITE_NAME}</Link>
-            <nav className="site-nav" aria-label="Главное меню">
-              <ul>
-                <li><Link href="/">Главная</Link></li>
-                <li><Link href="/category/aktyory">Актёры</Link></li>
-                <li><Link href="/category/muzyka">Музыка</Link></li>
-                <li><Link href="/category/sport">Спорт</Link></li>
-                <li><Link href="/category/nauka">Наука</Link></li>
-              </ul>
-            </nav>
+        <Analytics />
+
+        <header className="header">
+          <div className="container">
+            <HeaderNav />
           </div>
         </header>
 
-        <main>{children}</main>
+        <main className="wrapper">{children}</main>
 
-        <footer className="site-footer">
+        <footer>
           <div className="container">
-            <p>
-              © {new Date().getFullYear()} {SITE_NAME}. Биографический портал.
-              Материалы формируются с участием ИИ и проходят редакторскую проверку.
-            </p>
+            <div className="butn">
+              <Link href="/razmestit-biografiyu" className="btn">Разместить биографию</Link>
+              <Link href="/svyazatsya-s-nami" className="btn btn_small">Связаться с нами</Link>
+            </div>
+            <ul className="social" />
+            <div className="copyright">
+              <p>© {SITE_NAME} {new Date().getFullYear()}</p>
+              <p>Полное или частичное копирование материалов сайта разрешено только с указанием ссылки</p>
+            </div>
           </div>
         </footer>
       </body>

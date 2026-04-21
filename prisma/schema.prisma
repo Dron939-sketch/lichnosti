@@ -12,8 +12,12 @@ model Person {
   slug         String    @unique
   name         String
   alt_names    String[]  @default([])
+  intro        String?   @db.Text
   bio_full     String    @db.Text
   bio_short    String    @db.Text
+  sections     Json      @default("[]")
+  photos       Json      @default("[]")
+  videos       Json      @default("[]")
   photo_url    String?
   birth_date   DateTime?
   death_date   DateTime?
