@@ -4,27 +4,26 @@ import { generationQueue } from '../lib/ai/queue.js';
 import { slugify } from '../lib/utils/slugify.js';
 
 const CATEGORIES = [
-  { slug: 'aktyory',   name: 'Актёры' },
-  { slug: 'muzyka',    name: 'Музыка' },
-  { slug: 'sport',     name: 'Спорт' },
-  { slug: 'nauka',     name: 'Наука' },
-  { slug: 'politika',  name: 'Политика' },
-  { slug: 'literatura',name: 'Литература' },
-  { slug: 'kino',      name: 'Кино' },
-  { slug: 'biznes',    name: 'Бизнес' }
+  { slug: 'znamenitosti', name: 'Знаменитости' },
+  { slug: 'obrazovanie',  name: 'Образование' },
+  { slug: 'sport',        name: 'Спорт' },
+  { slug: 'gosudarstvo',  name: 'Государство' },
+  { slug: 'biznes',       name: 'Бизнес' },
+  { slug: 'blogery',      name: 'Блогеры' },
+  { slug: 'eksperty',     name: 'Эксперты' }
 ];
 
 const SEED_PERSONS = [
-  { name: 'Юрий Гагарин',       category: 'nauka' },
-  { name: 'Анна Ахматова',      category: 'literatura' },
-  { name: 'Фёдор Достоевский',  category: 'literatura' },
-  { name: 'Лев Толстой',        category: 'literatura' },
-  { name: 'Дмитрий Менделеев',  category: 'nauka' },
-  { name: 'Пётр Чайковский',    category: 'muzyka' },
-  { name: 'Сергей Бубка',       category: 'sport' },
-  { name: 'Александр Пушкин',   category: 'literatura' },
-  { name: 'Михаил Ломоносов',   category: 'nauka' },
-  { name: 'Сергей Королёв',     category: 'nauka' }
+  { name: 'Юрий Гагарин',       category: 'znamenitosti' },
+  { name: 'Анна Ахматова',      category: 'znamenitosti' },
+  { name: 'Фёдор Достоевский',  category: 'znamenitosti' },
+  { name: 'Лев Толстой',        category: 'znamenitosti' },
+  { name: 'Дмитрий Менделеев',  category: 'obrazovanie' },
+  { name: 'Пётр Чайковский',    category: 'znamenitosti' },
+  { name: 'Алина Загитова',     category: 'sport' },
+  { name: 'Александр Пушкин',   category: 'znamenitosti' },
+  { name: 'Михаил Ломоносов',   category: 'obrazovanie' },
+  { name: 'Сергей Королёв',     category: 'obrazovanie' }
 ];
 
 async function main() {

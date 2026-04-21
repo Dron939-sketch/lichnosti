@@ -32,8 +32,11 @@ DeepSeek проверяет персону и возвращает `{is_russian,
 lichnosty-selfwriting/
 ├── app/
 │   ├── page.js                         # Главная (ISR)
-│   ├── bio/[slug]/page.js              # Биография (ISR)
-│   ├── category/[slug]/page.js         # Категория (ISR)
+│   ├── bio/[slug]/page.js              # Биография (ISR, табы, анкеры)
+│   ├── type/[slug]/page.js             # Категория /type/<slug> (ISR)
+│   ├── razmestit-biografiyu/page.js    # Информационная страница
+│   ├── svyazatsya-s-nami/page.js       # Контакты
+│   ├── poleznye-stati/page.js          # Блог (заглушка)
 │   ├── sitemap.xml/route.js            # Динамический sitemap
 │   ├── robots.txt/route.js             # robots
 │   ├── api/
@@ -190,6 +193,14 @@ npm run migrate
 - [x] Russian-only гейт (`validate_russian` перед каждой генерацией)
 - [x] Источник трендов Wikipedia ru (именинники + юбилеи смерти)
 - [x] CI workflow (GitHub Actions, сборка на каждый PR)
+- [x] Оформление 1:1 с `lichnosty.ru` (белый фон, Roboto, бирюзовый `#1BB5D8` + фиолетовый `#9C27B0`)
+- [x] Двухколоночная страница биографии с табами «Биография / Фото / Видео»
+- [x] Якорные pill-кнопки на разделы, блок «Другие лица»
+- [x] Infinite-scroll к следующей биографии
+- [x] URL-схема `/type/<slug>` как на оригинале
+- [x] Яндекс.Метрика + Google Analytics (через `NEXT_PUBLIC_YM_ID` / `NEXT_PUBLIC_GA_ID`)
+- [x] Яндекс.Поделиться (lazy-load)
+- [x] Fancybox 5 галерея фото
 
 ## Что ещё нужно доделать по ТЗ
 

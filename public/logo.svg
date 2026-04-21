@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="44" viewBox="0 0 180 44" fill="none">
+  <g transform="translate(0,4)">
+    <path d="M8 4 L8 32 L20 32 L20 28 L12 28 L12 4 Z" fill="#9C27B0"/>
+    <circle cx="26" cy="12" r="4" fill="#9C27B0"/>
+    <path d="M22 18 L30 18 L30 32 L22 32 Z" fill="#9C27B0"/>
+  </g>
+  <text x="42" y="28" font-family="Roboto, Arial, sans-serif" font-size="18" font-weight="700" fill="#1a1a1a" letter-spacing="2">ЛИЧНОСТИ</text>
+</svg>

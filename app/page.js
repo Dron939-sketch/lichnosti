@@ -31,12 +31,12 @@ export default async function HomePage() {
       <section className="hero">
         <div className="container">
           <h1>{SITE_NAME}</h1>
-          <p>Биографии известных людей: актёры, политики, учёные, спортсмены, деятели искусства. Обновляется ежедневно.</p>
+          <p>Биографии известных личностей России: актёры, политики, учёные, спортсмены, деятели искусства, блогеры.</p>
         </div>
       </section>
 
-      <section className="container">
-        <h2 style={{ marginTop: 40, fontFamily: 'Playfair Display, Georgia, serif' }}>Новые биографии</h2>
+      <section className="container" style={{ padding: '24px 20px' }}>
+        <h3 className="line">Новые биографии</h3>
         <div className="grid">
           {latest.map((p) => <PersonCard key={p.slug} p={p} />)}
           {latest.length === 0 && <EmptyState />}
@@ -44,7 +44,7 @@ export default async function HomePage() {
 
         {popular.length > 0 && (
           <>
-            <h2 style={{ marginTop: 40, fontFamily: 'Playfair Display, Georgia, serif' }}>Популярное</h2>
+            <h3 className="line" style={{ marginTop: 32 }}>Популярное</h3>
             <div className="grid">
               {popular.map((p) => <PersonCard key={p.slug} p={p} />)}
             </div>
@@ -57,7 +57,7 @@ export default async function HomePage() {
 
 function PersonCard({ p }) {
   return (
-    <Link href={`/bio/${p.slug}`} className="card" style={{ textDecoration: 'none', color: 'inherit' }}>
+    <Link href={`/bio/${p.slug}`} className="card">
       <div
         className="card-photo"
         style={p.photo_url ? { backgroundImage: `url(${p.photo_url})` } : undefined}
