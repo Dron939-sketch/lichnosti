@@ -10,6 +10,7 @@
     "worker": "node worker.js",
     "cron:daily": "node scripts/cron-daily.js",
     "migrate": "node scripts/migrate-wordpress.js",
+    "scrape": "node scripts/scrape-lichnosty.js",
     "import:json": "node scripts/import-from-json.js",
     "import:sql": "node scripts/import-from-sql.js",
     "import:uploads": "node scripts/import-uploads.js",
