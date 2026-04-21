@@ -155,9 +155,52 @@ Cron `lichnosty-cron-stale` (вс, 03:00 UTC) → `/api/cron/update-stale`
 ## Миграция с текущего WordPress
 
 Старый сайт — WordPress с темой [`Leshiypos/lico`](https://github.com/Leshiypos/lico),
-CPT `lico`, таксономия `lico_cat`. Поддерживаются три пути миграции.
+CPT `lico`, таксономия `lico_cat`. Поддерживаются четыре пути миграции.
 
-### План A (рекомендуется) — PHP-экспорт на хостинге
+### План A (самый простой, без доступа на хостинг) — HTML-скрейпер
+
+Самый быстрый способ, если доступ к хостингу сложен — обычный парсинг
+публичных страниц по `sitemap_index.xml`.
+
+Запускать **на вашей машине** (Node 20+, доступ в интернет):
+
+```bash
+# Установить зависимости
+npm install
+
+# Тест на одной биографии (dry, без записи в файлы)
+npm run scrape -- --url https://lichnosty.ru/bio/andrey-yurevich-meyster/ --dry
+
+# Тест на 5 биографиях
+npm run scrape -- --limit=5
+
+# Весь сайт (~5-10 минут на 200 биографий, пауза 1.2 сек между запросами)
+npm run scrape
+```
+
+Результат:
+- `migration/db/lico_export.json` — полностью перезаписывается, содержит все биографии.
+- `public/media/YYYY/MM/*.jpg` — все фото, структура совпадает с WP `wp-content/uploads/`.
+  Варианты размеров WP (`-300x400.jpg`, `-scaled.jpg`) автоматически схлопываются в оригиналы.
+- URL-ы фото в JSON сразу переписаны на локальные `/media/...`.
+
+Дальше:
+```bash
+git add migration/db/lico_export.json public/media
+git commit -m "Scraped bios from lichnosty.ru"
+git push
+# Render автоматически пересоберёт. Затем в Render Shell:
+#   npx prisma db push   (если ещё не делали)
+#   npm run seed         (подхватит JSON, залъёт в БД)
+```
+
+Опции:
+- `SCRAPE_DELAY_MS=2000` — увеличить паузу (по умолчанию 1200 мс).
+- `--limit=N` — только первые N биографий.
+- `--url <URL>` — только одну конкретную биографию.
+- `--dry` — не писать файлы, только проверить парсинг.
+
+### План B — PHP-экспорт на хостинге
 
 Самый надёжный способ: запустить PHP-скрипт на самом WP-сайте, он соберёт
 все биографии со всеми кастомными мета-полями в один JSON.
@@ -178,7 +221,7 @@ CPT `lico`, таксономия `lico_cat`. Поддерживаются три
    npm run import:uploads migration/uploads --strip-variants
    ```
 
-### План B (fallback) — парсинг mysqldump SQL
+### План C — парсинг mysqldump SQL
 
 Если PHP-скрипт запустить не получается — работаем с чистым дампом БД.
 
@@ -200,11 +243,11 @@ npm run import:uploads migration/uploads --strip-variants
 `wp_terms`, `wp_term_taxonomy`, `wp_term_relationships` — берёт только
 посты `post_type='lico'` и таксономию `lico_cat`. Поддерживает `.sql.gz`.
 
-### План C (ограниченный) — WP REST API
+### План D (ограниченный) — WP REST API
 
 Остался как есть (`scripts/migrate-wordpress.js`), но работает только с
 полями, которые тема регистрирует через `show_in_rest: true`. Использовать
-только если Плана A/B нельзя.
+только если другие планы нельзя.
 
 ### Про фото
 
