@@ -55,6 +55,18 @@ services:
         value: deepseek-chat
 
   - type: cron
+    name: lichnosty-cron-populate
+    runtime: node
+    schedule: "0 1 * * *"
+    buildCommand: npm install
+    startCommand: "node -e \"require('https').get(process.env.NEXT_PUBLIC_URL + '/api/cron/populate-trends', { headers: { Authorization: 'Bearer ' + process.env.CRON_SECRET } }, r => r.on('data', d => process.stdout.write(d)))\""
+    envVars:
+      - key: NEXT_PUBLIC_URL
+        value: https://lichnosty.onrender.com
+      - key: CRON_SECRET
+        sync: false
+
+  - type: cron
     name: lichnosty-cron-daily
     runtime: node
     schedule: "0 2 * * *"

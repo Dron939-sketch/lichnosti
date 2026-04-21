@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci --no-audit --no-fund
+
+      - name: Prisma generate
+        run: npx prisma generate
+
+      - name: Next.js build
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+          # Build time must not require live DB/Redis.
+          DATABASE_URL: 'postgresql://stub:stub@127.0.0.1:5432/stub?connect_timeout=1&pool_timeout=1'
+          REDIS_URL: 'redis://127.0.0.1:6379'
+          NEXT_PUBLIC_URL: 'https://lichnosty.onrender.com'
+          SITE_NAME: 'Личности'
+          CRON_SECRET: 'ci'
+          REVALIDATE_SECRET: 'ci'
+          DEEPSEEK_API_KEY: 'ci'
+        run: npm run build
