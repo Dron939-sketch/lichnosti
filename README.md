@@ -5,6 +5,18 @@
 
 Развёртывается одним файлом `render.yaml` на [Render.com](https://render.com).
 
+## Тематика — только русские/советские персоны
+
+Портал публикует биографии **исключительно русских, советских и русскоязычных публичных фигур**
+(граждане и выходцы России, СССР, СНГ, Российской империи; деятели русской культуры).
+
+Перед каждой генерацией воркер вызывает промпт `validate_russian` —
+DeepSeek проверяет персону и возвращает `{is_russian, category_hint, reason}`.
+Если `false` — задача помечается как `FAILED` c причиной `rejected:not_russian`,
+биография не создаётся, токены не тратятся на бесполезную генерацию.
+Источники трендов дополнительно фильтруются эвристикой по тексту вступления
+из русской Википедии (см. `lib/sources/wikipedia-ru.js`).
+
 ## Стек
 
 - **Next.js 14** (App Router, ISR, standalone output)
@@ -101,10 +113,21 @@ npm run seed
 
 ## Как работает автономность
 
+### Источники кандидатов (Trends)
+Cron `lichnosty-cron-populate` (01:00 UTC) → `/api/cron/populate-trends`
+→ `runCollectAndSave()` опрашивает источники и наполняет `TrendCandidate`:
+- **Wikipedia ru — "Родившиеся %d %B"**: 50+ человек, родившихся в сегодняшнюю дату.
+  Фильтр по intro-экстракту — только русскоязычные (эвристика по словам-маркерам).
+- **Wikipedia ru — "Умершие %d %B"**: аналогично для дня смерти (анонсы).
+- (планируется) Яндекс.Вордстат, Кинопоиск, RSS TASS/Lenta/RIA.
+
+Дедупликация по slug; персоны, уже есть в `Person`, пропускаются.
+
 ### Ежедневная генерация
 Cron `lichnosty-cron-daily` (02:00 UTC) → POST `/api/cron/generate-daily`
 → `enqueueDailyGeneration()` берёт топ-N из `TrendCandidate` и ставит в BullMQ
-→ воркер генерирует биографию + SEO-мета + краткое описание + похожих персон
+→ воркер **сначала валидирует через `validate_russian`**, при отказе — SKIP,
+иначе генерирует биографию + SEO-мета + краткое описание + похожих персон
 → сохраняет в `Person`, инвалидирует ISR через `/api/revalidate`.
 
 ### Обновление устаревших
@@ -164,11 +187,14 @@ npm run migrate
 - [x] Dockerfile для web и worker, `render.yaml`
 - [x] Скрипты: `seed-initial`, `migrate-wordpress`, `cron-daily`
 - [x] Базовая тема оформления (Playfair Display + Georgia, золотой акцент)
+- [x] Russian-only гейт (`validate_russian` перед каждой генерацией)
+- [x] Источник трендов Wikipedia ru (именинники + юбилеи смерти)
+- [x] CI workflow (GitHub Actions, сборка на каждый PR)
 
 ## Что ещё нужно доделать по ТЗ
 
-- [ ] Реальные источники трендов (Google Trends, Яндекс.Вордстат, Wikipedia RSS, Кинопоиск).
-      Сейчас кандидаты берутся из таблицы `TrendCandidate`, которую нужно наполнять.
+- [ ] Дополнительные источники трендов (Яндекс.Вордстат, Кинопоиск, RSS TASS/Lenta).
+      Сейчас работает только Wikipedia ru.
 - [ ] Fact-check постпроцессинг через Wikipedia API (промпт `fact_check` уже есть).
 - [ ] Google Indexing API и IndexNow (ключ — в env).
 - [ ] Страница поиска (`/search`).
