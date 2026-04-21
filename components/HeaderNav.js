@@ -66,7 +66,7 @@ export default function HeaderNav() {
           <svg id="search_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 513 513" role="img" aria-label="Поиск">
             <path d="M504.35 459.06l-99.43-99.48c74.4-99.42 54.11-240.34-45.31-314.74S119.26-9.28 44.86 90.15-9.26 330.49 90.17 404.9c79.87 59.77 189.57 59.77 269.43 0l99.48 99.48c12.5 12.5 32.77 12.5 45.27 0s12.5-32.77 0-45.27ZM225.72 385.7c-88.37 0-160-71.63-160-160s71.63-160 160-160 160 71.63 160 160-71.58 159.91-160 160Z" fill="currentColor"/>
           </svg>
-          <form action="/" method="GET" onClick={(e) => e.stopPropagation()}>
+          <form action="/search" method="GET" onClick={(e) => e.stopPropagation()}>
             <input type="text" name="s" placeholder="Чью биографию изучим?" />
           </form>
         </div>

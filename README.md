@@ -248,15 +248,22 @@ npm run import:uploads migration/uploads --strip-variants
 - [x] Яндекс.Метрика + Google Analytics (через `NEXT_PUBLIC_YM_ID` / `NEXT_PUBLIC_GA_ID`)
 - [x] Яндекс.Поделиться (lazy-load)
 - [x] Fancybox 5 галерея фото
+- [x] Страница поиска `/search?s=...` (Prisma `contains`, пагинация)
+- [x] Fact-check через русскую Wikipedia: `lib/factcheck/wikipedia-ru.js`
+      ищет статью, `fact_check` промпт сравнивает с нашим текстом.
+      Cron `/api/cron/fact-check` — ежедневно по 5 персонам.
+- [x] Источник трендов RSS: TASS + Lenta + RIA (`lib/sources/news-rss.js`).
+      Извлекает "Имя Фамилия" по словарю русских имён, фильтрует по стоп-словам.
+- [x] Заглушки для Яндекс.Вордстат и Кинопоиск (ждут API-токенов)
+- [x] Next.js обновлён до 14.2.33+ (CVE-фикс)
 
 ## Что ещё нужно доделать по ТЗ
 
-- [ ] Дополнительные источники трендов (Яндекс.Вордстат, Кинопоиск, RSS TASS/Lenta).
-      Сейчас работает только Wikipedia ru.
-- [ ] Fact-check постпроцессинг через Wikipedia API (промпт `fact_check` уже есть).
-- [ ] Google Indexing API и IndexNow (ключ — в env).
-- [ ] Страница поиска (`/search`).
+- [ ] Реальные вызовы Яндекс.Вордстат и Кинопоиск (заглушки готовы).
+- [ ] Google Indexing API.
 - [ ] Админ-панель / страница статистики `GenerationLog`.
+- [ ] Форма комментариев в табе «Отзывы».
+- [ ] Реальный логотип (сейчас placeholder).
 
 ## Бюджет (ежемесячно)
 

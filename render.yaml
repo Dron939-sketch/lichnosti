@@ -79,6 +79,18 @@ services:
         sync: false
 
   - type: cron
+    name: lichnosty-cron-factcheck
+    runtime: node
+    schedule: "0 4 * * *"
+    buildCommand: npm install
+    startCommand: "node -e \"require('https').get(process.env.NEXT_PUBLIC_URL + '/api/cron/fact-check?limit=5', { headers: { Authorization: 'Bearer ' + process.env.CRON_SECRET } }, r => r.on('data', d => process.stdout.write(d)))\""
+    envVars:
+      - key: NEXT_PUBLIC_URL
+        value: https://lichnosty.onrender.com
+      - key: CRON_SECRET
+        sync: false
+
+  - type: cron
     name: lichnosty-cron-stale
     runtime: node
     schedule: "0 3 * * 0"
