@@ -155,18 +155,65 @@ Cron `lichnosty-cron-stale` (вс, 03:00 UTC) → `/api/cron/update-stale`
 ## Миграция с текущего WordPress
 
 Старый сайт — WordPress с темой [`Leshiypos/lico`](https://github.com/Leshiypos/lico),
-CPT `lico`, таксономия `lico_cat`.
+CPT `lico`, таксономия `lico_cat`. Поддерживаются три пути миграции.
+
+### План A (рекомендуется) — PHP-экспорт на хостинге
+
+Самый надёжный способ: запустить PHP-скрипт на самом WP-сайте, он соберёт
+все биографии со всеми кастомными мета-полями в один JSON.
+
+1. Откройте `scripts/export-from-wordpress.php`, измените `EXPORT_SECRET`
+   на случайную строку.
+2. Загрузите файл в корень сайта через ispmgr → Менеджер файлов или FTP:
+   `/www/lichnosty.ru/export-lico.php`.
+3. В браузере: `https://lichnosty.ru/export-lico.php?key=<SECRET>`.
+4. Скачайте созданный `lico_export.json` и положите в репо:
+   `migration/db/lico_export.json`.
+5. **Удалите скрипт с хостинга** сразу после экспорта.
+6. Скачайте папку `wp-content/uploads/` отдельно через Менеджер файлов.
+   Распакуйте в репо: `migration/uploads/`.
+7. Запустите импорт:
+   ```bash
+   npm run import:json migration/db/lico_export.json
+   npm run import:uploads migration/uploads --strip-variants
+   ```
+
+### План B (fallback) — парсинг mysqldump SQL
+
+Если PHP-скрипт запустить не получается — работаем с чистым дампом БД.
 
 ```bash
-# 1. Создать Application Password в WP-админке
-#    Users → Profile → Application Passwords
-# 2. Положить в .env:
-#    WP_SOURCE_URL=https://lichnosty.ru
-#    WP_APP_USER=your_login
-#    WP_APP_PASSWORD=xxxx xxxx xxxx xxxx
-# 3. Запустить
-npm run migrate
+# 1. Дамп из ispmgr / phpMyAdmin / mysqldump → migration/db/lichnosty.sql[.gz]
+# 2. Перед коммитом удалите таблицы с паролями:
+grep -vE "^INSERT INTO \`?(wp_users|wp_usermeta)" migration/db/lichnosty.sql \
+  > migration/db/lichnosty-clean.sql
+
+# 3. Проверка без записи в БД
+npm run import:sql migration/db/lichnosty-clean.sql -- --dry
+
+# 4. Реальный импорт
+npm run import:sql migration/db/lichnosty-clean.sql
+npm run import:uploads migration/uploads --strip-variants
 ```
+
+Скрипт `import-from-sql.js` парсит INSERT-ы для `wp_posts`, `wp_postmeta`,
+`wp_terms`, `wp_term_taxonomy`, `wp_term_relationships` — берёт только
+посты `post_type='lico'` и таксономию `lico_cat`. Поддерживает `.sql.gz`.
+
+### План C (ограниченный) — WP REST API
+
+Остался как есть (`scripts/migrate-wordpress.js`), но работает только с
+полями, которые тема регистрирует через `show_in_rest: true`. Использовать
+только если Плана A/B нельзя.
+
+### Про фото
+
+`import-uploads.js`:
+- копирует файлы из `migration/uploads/` в `public/media/`;
+- переписывает в содержимом всех `Person` URL-ы `https://lichnosty.ru/wp-content/uploads/...` → `/media/...`;
+- флаг `--strip-variants` удаляет превью WordPress (`*-123x456.jpg`, `*-scaled.jpg`,
+  `*-thumbnail.jpg`) — уменьшает объём в 3–5 раз, Next.js сам генерирует
+  размеры через `next/image`.
 
 Скрипт пройдёт по `/wp-json/wp/v2/lico` и `/wp-json/wp/v2/lico_cat`,
 импортирует посты и категории в Postgres. Работает в `upsert` — можно

@@ -19,3 +19,8 @@ coverage/
 .nyc_output/
 
 prisma/migrations/dev.db*
+
+# Migration artifacts — большие дампы и uploads держим в отдельной ветке/LFS,
+# но id-mapping-и и временные файлы игнорируем
+migration/**/wp_id_to_db_id.json
+migration/**/*.tmp
