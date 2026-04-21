@@ -2,7 +2,9 @@ FROM node:20-alpine AS base
 
 FROM base AS deps
 WORKDIR /app
-RUN apk add --no-cache libc6-compat
+# openssl is required by Prisma to detect the version and pick the right engine;
+# libc6-compat provides glibc shims used by some native modules.
+RUN apk add --no-cache libc6-compat openssl
 COPY package.json package-lock.json* ./
 COPY prisma ./prisma
 RUN npm ci || npm install
@@ -10,6 +12,7 @@ RUN npx prisma generate
 
 FROM base AS builder
 WORKDIR /app
+RUN apk add --no-cache libc6-compat openssl
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -19,6 +22,7 @@ FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+RUN apk add --no-cache libc6-compat openssl
 
 RUN addgroup --system --gid 1001 nodejs \
  && adduser --system --uid 1001 nextjs
