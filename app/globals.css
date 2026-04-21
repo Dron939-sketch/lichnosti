@@ -1,0 +1,205 @@
+:root {
+  --bg: #fbfaf7;
+  --fg: #1a1a1a;
+  --muted: #5b5b5b;
+  --accent: #b8860b;
+  --accent-light: #f3ead1;
+  --border: #e5e1d6;
+  --card: #ffffff;
+  --radius: 10px;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 4px 16px rgba(0, 0, 0, 0.04);
+  --container: 1120px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Georgia', 'PT Serif', 'Times New Roman', serif;
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+img { max-width: 100%; height: auto; display: block; }
+
+.container {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.site-header {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 18px 0;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.site-header .inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.site-logo {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-size: 26px;
+  color: var(--fg);
+  letter-spacing: 0.02em;
+}
+.site-nav ul {
+  display: flex;
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: sans-serif;
+  font-size: 15px;
+}
+.site-nav a { color: var(--fg); }
+.site-nav a:hover { color: var(--accent); }
+
+.site-footer {
+  margin-top: 80px;
+  padding: 36px 0;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 14px;
+  font-family: sans-serif;
+}
+
+.hero {
+  padding: 56px 0 32px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+.hero h1 {
+  font-size: clamp(32px, 5vw, 48px);
+  margin: 0 0 12px;
+  font-family: 'Playfair Display', Georgia, serif;
+}
+.hero p {
+  color: var(--muted);
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 22px;
+  padding: 36px 0;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.card-photo {
+  aspect-ratio: 3/4;
+  background: var(--accent-light) center/cover no-repeat;
+}
+.card-body { padding: 14px 16px 18px; }
+.card-name {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  font-family: 'Playfair Display', Georgia, serif;
+}
+.card-meta {
+  font-size: 13px;
+  color: var(--muted);
+  font-family: sans-serif;
+}
+
+.bio-article {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+.bio-header {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 28px;
+  align-items: start;
+  margin-bottom: 32px;
+}
+.bio-photo {
+  width: 200px;
+  aspect-ratio: 3/4;
+  border-radius: var(--radius);
+  background: var(--accent-light) center/cover no-repeat;
+  border: 1px solid var(--border);
+}
+.bio-title h1 {
+  font-size: clamp(28px, 4vw, 40px);
+  margin: 0 0 12px;
+  font-family: 'Playfair Display', Georgia, serif;
+}
+.bio-facts {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+  font-size: 14px;
+  color: var(--muted);
+}
+.bio-facts li { padding: 4px 0; }
+.bio-facts strong { color: var(--fg); margin-right: 6px; }
+
+.bio-content h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 26px;
+  margin-top: 34px;
+  margin-bottom: 12px;
+}
+.bio-content h3 { font-size: 20px; margin-top: 24px; }
+.bio-content p { margin: 0 0 16px; }
+.bio-content ul, .bio-content ol { padding-left: 22px; }
+.bio-content blockquote {
+  border-left: 3px solid var(--accent);
+  background: var(--accent-light);
+  margin: 20px 0;
+  padding: 10px 18px;
+  font-style: italic;
+}
+
+.also-read {
+  margin-top: 40px;
+  padding: 20px 24px;
+  background: var(--accent-light);
+  border-radius: var(--radius);
+}
+.also-read h3 {
+  margin: 0 0 10px;
+  font-family: 'Playfair Display', Georgia, serif;
+}
+.also-read ul { margin: 0; padding-left: 20px; }
+
+.breadcrumbs {
+  font-family: sans-serif;
+  font-size: 13px;
+  color: var(--muted);
+  padding: 16px 0;
+}
+.breadcrumbs a { color: var(--muted); }
+.breadcrumbs .sep { margin: 0 6px; }
+
+@media (max-width: 640px) {
+  .bio-header { grid-template-columns: 1fr; }
+  .bio-photo { width: 160px; }
+  .site-nav ul { gap: 12px; font-size: 14px; }
+}

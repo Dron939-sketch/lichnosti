@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Person {
+  id           Int       @id @default(autoincrement())
+  slug         String    @unique
+  name         String
+  alt_names    String[]  @default([])
+  bio_full     String    @db.Text
+  bio_short    String    @db.Text
+  photo_url    String?
+  birth_date   DateTime?
+  death_date   DateTime?
+  birth_place  String?
+  profession   String?
+  zodiac       String?
+  status       PersonStatus @default(PUBLISHED)
+  seo_title    String?
+  seo_desc     String?
+  seo_keywords String?
+  social_links Json      @default("[]")
+  similar_ids  Int[]     @default([])
+  source_refs  Json      @default("[]")
+  ai_model     String?
+  ai_tokens    Int       @default(0)
+  views        Int       @default(0)
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  last_ai_check DateTime?
+
+  categories   CategoryOnPerson[]
+
+  @@index([status, updated_at])
+  @@index([created_at])
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  name        String
+  description String?
+  seo_title   String?
+  seo_desc    String?
+  parent_id   Int?
+  parent      Category?  @relation("CategoryTree", fields: [parent_id], references: [id])
+  children    Category[] @relation("CategoryTree")
+  persons     CategoryOnPerson[]
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model CategoryOnPerson {
+  person_id   Int
+  category_id Int
+  person      Person   @relation(fields: [person_id], references: [id], onDelete: Cascade)
+  category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
+
+  @@id([person_id, category_id])
+  @@index([category_id])
+}
+
+model GenerationLog {
+  id         Int      @id @default(autoincrement())
+  job_id     String?  @unique
+  person_id  Int?
+  kind       String
+  prompt_key String
+  tokens_in  Int      @default(0)
+  tokens_out Int      @default(0)
+  cost_usd   Float    @default(0)
+  status     JobStatus @default(QUEUED)
+  error      String?
+  created_at DateTime @default(now())
+  finished_at DateTime?
+
+  @@index([status, created_at])
+}
+
+model TrendCandidate {
+  id         Int      @id @default(autoincrement())
+  name       String
+  source     String
+  score      Float    @default(0)
+  processed  Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  @@unique([name, source])
+  @@index([processed, score])
+}
+
+enum PersonStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum JobStatus {
+  QUEUED
+  RUNNING
+  DONE
+  FAILED
+}
