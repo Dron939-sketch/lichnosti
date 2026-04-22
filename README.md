@@ -103,15 +103,30 @@ npm run seed
    `DEEPSEEK_API_KEY` (взять на [platform.deepseek.com](https://platform.deepseek.com)).
 4. Для cron-сервисов добавьте `CRON_SECRET` с тем же значением, что
    у `lichnosty-web` (Render сгенерирует его автоматически — скопируйте).
-5. После первого деплоя — применить Prisma-схему:
+5. После первого деплоя инициализировать БД. **Два способа**:
+
+   **a) Через Render Shell (paid plans):**
    ```bash
-   # в Render Shell сервиса lichnosty-web
-   npx prisma db push
-   ```
-6. Засеять данные:
-   ```bash
-   # в Render Shell сервиса lichnosty-worker
+   # в Shell сервиса lichnosty-web
+   npx prisma migrate deploy
    node scripts/seed-initial.js
+   ```
+
+   **b) Через HTTP-эндпоинты (free tier, где Shell недоступен):**
+   На любой машине:
+   ```bash
+   # Возьмите CRON_SECRET из Render Dashboard → Environment → глазик
+   export URL="https://lichnosty.onrender.com"
+   export SECRET="<вставьте-сюда>"
+
+   # 1) Применить схему (идемпотентно)
+   curl -X POST "$URL/api/admin/init" -H "Authorization: Bearer $SECRET"
+
+   # 2) Импортировать биографии из migration/db/lico_export.json
+   curl -X POST "$URL/api/admin/import" -H "Authorization: Bearer $SECRET"
+
+   # 3) Проверить состояние БД
+   curl "$URL/api/admin/status" -H "Authorization: Bearer $SECRET"
    ```
 
 ## Как работает автономность
